@@ -29,7 +29,7 @@ class VKAthorizationViewController: UIViewController {
             URLQueryItem(name: "display", value: "mobile"),
             URLQueryItem(name: "redirect_uri", value: "https://oauth.vk.com/blank.html"),
             URLQueryItem(name: "scope", value: "270342"),
-//            URLQueryItem(name: "response_type", value: "token"),
+            URLQueryItem(name: "response_type", value: "token"),
             URLQueryItem(name: "v", value: "5.52")
         ]
         
@@ -85,8 +85,8 @@ extension VKAthorizationViewController: WKNavigationDelegate {
         
         let token = params["access_token"]
         
-//        Session.shared.token = token ?? ""
-        Session.shared.token = "a38a31ab8b9114b469783b969a24c571f462453f7016f2b2ab7a22f8acf805ae5fbfc74d09876c9ec61da"
+        Session.shared.token = token ?? ""
+//        Session.shared.token = "a38a31ab8b9114b469783b969a24c571f462453f7016f2b2ab7a22f8acf805ae5fbfc74d09876c9ec61da"
         print(token ?? "")
         
         

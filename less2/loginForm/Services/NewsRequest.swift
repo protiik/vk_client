@@ -5,7 +5,6 @@
 //  Created by prot on 27.04.2020.
 //  Copyright © 2020 prot. All rights reserved.
 //
-
 import Alamofire
 import SwiftyJSON
 import RealmSwift
