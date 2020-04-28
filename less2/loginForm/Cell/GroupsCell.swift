@@ -24,10 +24,8 @@ class GroupsCell: UITableViewCell {
     
     override func prepareForReuse() {
         super.prepareForReuse()
-        
         groupNameLabel.text = nil
         groupImageView.image = nil
-        
     }
         
     @objc func onTap(_ sender: UITapGestureRecognizer){

@@ -15,28 +15,9 @@ class PhotosVK: Object {
     @objc dynamic var photo = String()
 }
 
-//class DataBasePhotos {
-//    func save( photos: [PhotosVK] ) throws {
-//        let realm = try Realm()
-//        realm.beginWrite()
-//        realm.add(photos)
-//        try realm.commitWrite()
-//    }
-//
-//    func photos() -> [PhotosVK] {
-//        do {
-//            let realm = try Realm()
-//            let objects = realm.objects(PhotosVK.self)
-//            return Array(objects)
-//        }
-//        catch {
-//            return []
-//        }
-//    }
-//}
 
 protocol PhotosServiceRequest {
-    func loadData (completion: @escaping () -> Void)
+    func loadData ()
 }
 
 protocol PhotosParser {
@@ -53,7 +34,7 @@ class SwiftyJSONParserPhotos: PhotosParser {
             let result = items.map{item -> PhotosVK in
                 let photos = PhotosVK()
                 let sizes = item["sizes"].arrayValue
-                if let first = sizes.first{
+                if let first = sizes.first(where: {$0["type"].stringValue == "q"}){
                     photos.photo = first["url"].stringValue
                 }
                 
@@ -93,7 +74,7 @@ class PhotosRequest: PhotosServiceRequest {
     let baseURL = "https://api.vk.com/method"
     let apiKey = Session.shared.token
     
-    func loadData (completion: @escaping () -> Void) {
+    func loadData () {
         let path = "/photos.getAll"
         let url = baseURL + path
         
@@ -103,12 +84,11 @@ class PhotosRequest: PhotosServiceRequest {
             "access_token": apiKey
         ]
         print("\(userId)")
-        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { [completion] (response) in
+        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { (response) in
             guard let data = response.data else { return }
             
             let photos: [PhotosVK] = self.parser.parse(data: data)
             self.save(photos: photos)
-            completion()
         }
         
     }

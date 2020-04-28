@@ -16,24 +16,44 @@ class SubscriptionTableViewController: UITableViewController {
     let groupsService: GroupsServiceRequest = GroupsRequest(parser: SwiftyJSONParserGroups())
     var groupsList: Results<GroupsVK>?
     var token: NotificationToken?
+    var searchAns: [GroupsVK] = []
     var cachedImaged = [String: UIImage]()
-    
+    var myGroups: [GroupsVK] {
+        guard let groups = groupsList else {return []}
+        return Array(groups)
+    }
     @IBOutlet weak var searBarGroup:UISearchBar!
     
-    var groupsMassive = [
-        Group(name: "Party", imageGroups: UIImage(named: "party")!)
-    ]
+    var myGroupsCell: [GroupsVK]{
+        if searching == true{
+            return Array(searchAns)
+        }else{
+            return Array(myGroups)
+        }
+    }
+    
     var searching = false
-    var searchAns: Results<GroupsVK>?
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        groupsService.loadData()
+        let dataDownload = DispatchQueue(label: "download_data_friends")
+        dataDownload.async {
+            self.groupsService.loadData { }
+        }
+        groupsService.loadData { }
         observeChangesGroups()
-        //            self.prepareSections()
         
+        refreshControl = UIRefreshControl()
         
+        refreshControl?.addTarget(self, action: #selector(updateGroups), for: .valueChanged)
+    }
+    
+    @objc
+    func updateGroups() {
+        groupsService.loadData{ [weak self] in
+            self?.refreshControl?.endRefreshing()
+        }
     }
     
     //    func prepareSections () {
@@ -54,7 +74,7 @@ class SubscriptionTableViewController: UITableViewController {
         do{
             let realm = try Realm()
             groupsList = realm.objects(GroupsVK.self)
-            print(realm.configuration.fileURL)
+            
             token = groupsList?.observe{ (changes) in
                 guard let tableView = self.tableView else { return }
                 switch changes{
@@ -66,6 +86,7 @@ class SubscriptionTableViewController: UITableViewController {
                     tableView.insertRows(at: insertions.map({IndexPath(row: $0, section: 0)}), with: .none)
                     tableView.deleteRows(at: deletions.map({IndexPath(row: $0, section: 0)}), with: .none)
                     tableView.reloadRows(at: modifications.map({IndexPath(row: $0, section: 0)}), with: .none)
+                    
                     tableView.endUpdates()
                     
                 case .error(let error):
@@ -93,73 +114,72 @@ class SubscriptionTableViewController: UITableViewController {
     //    }
     
     //сигуэй при выходе с контроллера, добавление элементов на другой контролллер
-    var count = 0
-    @IBAction func addGroup(segue: UIStoryboardSegue) {
-        var nameGroups = [String]() //массив для перебора имен в массиве groupsMassive
-        for i in groupsMassive{
-            nameGroups.append(i.name)
-        }
-        if segue.identifier == "addGroup"  {
-            // Ссылка на контроллер с которого переход
-            guard let allGroupsController = segue.source as? AllGroupsTableController else { return }
-            //получаем индекс ячейки с массива
-            if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
-                //получаем группу по индексу
-                let addGroup = allGroupsController.allGroupsMassive[indexPath.row]
-                // добавляем в массив
-                let nameAllGroup = addGroup.name
-                if !nameGroups.contains(nameAllGroup) {
-                    groupsMassive.append(addGroup)
-                    print("Добавлен элемент: " + nameAllGroup)
-                    count += 1
-                    let db = Database.database().reference()
-                    db.child("groups").updateChildValues(["\(count)": nameAllGroup])
-                }
-            }
-            //обновляем таблицу
-            tableView.reloadData()
-        }
-    }
+    //    var count = 0
+    //    @IBAction func addGroup(segue: UIStoryboardSegue) {
+    //        var nameGroups = [String]() //массив для перебора имен в массиве groupsMassive
+    //        for i in groupsMassive{
+    //            nameGroups.append(i.name)
+    //        }
+    //        if segue.identifier == "addGroup"  {
+    //            // Ссылка на контроллер с которого переход
+    //            guard let allGroupsController = segue.source as? AllGroupsTableController else { return }
+    //            //получаем индекс ячейки с массива
+    //            if let indexPath = allGroupsController.tableView.indexPathForSelectedRow {
+    //                //получаем группу по индексу
+    //                let addGroup = allGroupsController.allGroupsMassive[indexPath.row]
+    //                // добавляем в массив
+    //                let nameAllGroup = addGroup.name
+    //                if !nameGroups.contains(nameAllGroup) {
+    //                    groupsMassive.append(addGroup)
+    //                    print("Добавлен элемент: " + nameAllGroup)
+    //                    count += 1
+    //                    let db = Database.database().reference()
+    //                    db.child("groups").updateChildValues(["\(count)": nameAllGroup])
+    //                }
+    //            }
+    //            //обновляем таблицу
+    //            tableView.reloadData()
+    //        }
+    //    }
     
-    let queue = DispatchQueue(label: "download_url")
+    let queue = DispatchQueue(label: "my_groups_download_image_url")
     private func downloadImage (for url: String, indexPath: IndexPath) {
-        queue.async {
+        queue.sync {
             if let image = Session.shared.getImage(url: url){
                 self.cachedImaged[url] = image
-            }
-            DispatchQueue.main.async {
-                self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                
+                DispatchQueue.main.async {
+                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+                }
             }
         }
     }
-    
     
     
     //функция удаления элементов
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
-        let nameGroup = groupsMassive[indexPath.row]
-        // Если была нажата кнопка «Удалить»
+        let name = myGroupsCell[indexPath.row]
         if editingStyle == .delete {
-            // Удаляем  из массива
-            groupsMassive.remove(at: indexPath.row)
-            print("Удален элемент: " + nameGroup.name)
-            // И удаляем строку из таблицы
-            tableView.deleteRows(at: [indexPath], with: .fade)
+            // Delete the row from the data source
+            do{
+                let realm = try Realm()
+                realm.beginWrite()
+                realm.delete(name)
+                try realm.commitWrite()
+            }catch{
+                print(error.localizedDescription)
+            }
         }
     }
     // MARK: - Table view data source
     
-    //        override func numberOfSections(in tableView: UITableView) -> Int {
-    //            // #warning Incomplete implementation, return the number of sections
-    ////            return groupsList.count
-    //        }
+    //    override func numberOfSections(in tableView: UITableView) -> Int {
+    //        // #warning Incomplete implementation, return the number of sections
+    //        return myGroupsArray.count
+    //    }
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of rows
-        if searching{
-            return searchAns?.count ?? 0
-        }else{
-            return groupsList?.count ?? 0
-        }
+        return myGroupsCell.count
         
         //        groupsList?.count ?? 0
         
@@ -170,24 +190,13 @@ class SubscriptionTableViewController: UITableViewController {
         guard let cell = tableView.dequeueReusableCell(withIdentifier: "GroupsCell", for: indexPath) as? GroupsCell else {
             preconditionFailure("No connect GroupCell")
         }
-        if searching{
-            let element = searchAns?[indexPath.row]
-            cell.groupNameLabel.text = element?.name
-            //            let image = element?.photo
-            //            if let cached = cachedImaged[image ?? ""] {
-            //                cell.groupImageView.image = cached
-            //            }else {
-            //                downloadImage(for: image ?? "" , indexPath: indexPath)
-            //            }
+        let element = myGroupsCell[indexPath.row]
+        cell.groupNameLabel.text = element.name
+        let image = element.photo
+        if let cached = cachedImaged[image] {
+            cell.groupImageView.image = cached
         }else {
-            let element = groupsList?[indexPath.row]
-            cell.groupNameLabel.text = element?.name
-            let image = element?.photo
-            if let cached = cachedImaged[image ?? "" ] {
-                cell.groupImageView.image = cached
-            }else {
-                downloadImage(for: image ?? "" , indexPath: indexPath)
-            }
+            downloadImage(for: image , indexPath: indexPath)
         }
         
         
@@ -244,27 +253,15 @@ extension SubscriptionTableViewController: UISearchBarDelegate{
     
     func searchBar(_ searchBar: UISearchBar, textDidChange searchText: String){
         
-        //
-        self.searching = true
-        
-        self.searchAns = self.groupsList?.filter("name contains [c]%@", searchText)
-        self.tableView.reloadData()
-        
-        
-        //            self.tableView.reloadData()
-        
-        
-        //        let queue = DispatchQueue(label: "download_url")
-        //        private func downloadImage (for url: String, indexPath: IndexPath) {
-        //            queue.async {
-        //                if let image = Session.shared.getImage(url: url){
-        //                    self.cachedImaged[url] = image
-        //                }
-        //                DispatchQueue.main.async {
-        //                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-        //                }
-        //            }
-        //        }
+        if searchText.count > 0{
+            searching = true
+            searchAns = myGroups.filter({$0.name.range(of: searchText, options: .caseInsensitive) != nil})
+            
+            self.tableView.reloadData()
+        }else{
+            searching = false
+            self.tableView.reloadData()
+        }
     }
     
     func searchBarCancelButtonClicked(_ searchBar: UISearchBar) {

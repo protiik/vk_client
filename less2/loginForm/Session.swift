@@ -16,10 +16,14 @@ class Session {
     
     
     func getImage (url:String?) -> UIImage?{
-           guard let image = url else { return nil }
-           if let url = URL(string: image) {
-            return UIImage(data: try! Data(contentsOf: url))
-           }
-           return nil
-       }
+        guard let image = url else { return nil }
+        if let url = URL(string: image) {
+            do{
+                return UIImage(data: try Data(contentsOf: url))
+            }catch{
+                print(error.localizedDescription)
+            }
+        }
+        return nil
+    }
 }

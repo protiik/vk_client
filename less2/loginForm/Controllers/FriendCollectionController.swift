@@ -7,20 +7,54 @@
 //
 
 import UIKit
-
+import RealmSwift
 
 
 class FriendCollectionController: UICollectionViewController {
     
-        var collectionFriendName: String?
-        var collectionFriendImage: String?
+    let photoService: PhotosServiceRequest = PhotosRequest(parser: SwiftyJSONParserPhotos())
+    var collectionFriendName: String?
+    var photosList: [PhotosVK] = []
+    var cachedImaged = [String: UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+        print(Session.shared.userId)
         title = collectionFriendName
+        
+        photoService.loadData()
+        loadData()
+    }
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(true)
+        
     }
     
+    func loadData () {
+        do{
+            let realm = try Realm()
+            print(realm.configuration.fileURL ?? "Нет данных в БД")
+            let photos = realm.objects(PhotosVK.self)
+            photosList = Array(photos)
+        }catch{
+            print(error.localizedDescription)
+        }
+        print(photosList)
+    }
+    let queue = DispatchQueue(label: "download_url")
+    private func downloadImage (for url: String, indexPath: IndexPath) {
+        queue.sync {
+            if let image = Session.shared.getImage(url: url){
+                self.cachedImaged[url] = image
+                DispatchQueue.main.async {
+                    self.collectionView.reloadItems(at: [indexPath])
+                }
+            }
+//            DispatchQueue.main.async {
+//                self.collectionView.reloadItems(at: [indexPath])
+//            }
+        }
+    }
     /*
      // MARK: - Navigation
      
@@ -33,22 +67,29 @@ class FriendCollectionController: UICollectionViewController {
     
     // MARK: UICollectionViewDataSource
     
-    override func numberOfSections(in collectionView: UICollectionView) -> Int {
-        // #warning Incomplete implementation, return the number of sections
-        return 1
-    }
+//    override func numberOfSections(in collectionView: UICollectionView) -> Int {
+//        // #warning Incomplete implementation, return the number of sections
+//        return 0
+//    }
     
     
     override func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         // #warning Incomplete implementation, return the number of items
-        return 1
+        print(photosList.count)
+        return photosList.count
     }
     
     override func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         let cell = collectionView.dequeueReusableCell(withReuseIdentifier: "FriendsCollectionCell", for: indexPath) as! FriendsCollectionCell
         
-        let image = collectionFriendImage ?? ""
-        cell.friendImageView.image = Session.shared.getImage(url: image)
+        let element = photosList[indexPath.row]
+        let image = element.photo
+                   if let cahed = cachedImaged[image]{
+                       cell.friendImageView.image = cahed
+                   }else {
+                       downloadImage(for: image, indexPath: indexPath)
+                   }
+        
         return cell
     }
     

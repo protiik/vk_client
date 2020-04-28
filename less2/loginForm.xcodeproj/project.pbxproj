@@ -38,6 +38,7 @@
 		9C761E7B23E1EBE00090FB56 /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C761E7923E1EBE00090FB56 /* Main.storyboard */; };
 		9C761E7D23E1EBE10090FB56 /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 9C761E7C23E1EBE10090FB56 /* Assets.xcassets */; };
 		9C761E8023E1EBE10090FB56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C761E7E23E1EBE10090FB56 /* LaunchScreen.storyboard */; };
+		9CADA35A24568AE5005C4F25 /* NewsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CADA35924568AE5005C4F25 /* NewsRequest.swift */; };
 		9CE96D472441BD0500417A7C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CE96D462441BD0500417A7C /* GoogleService-Info.plist */; };
 /* End PBXBuildFile section */
 
@@ -76,6 +77,7 @@
 		9C761E7C23E1EBE10090FB56 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		9C761E7F23E1EBE10090FB56 /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		9C761E8123E1EBE10090FB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		9CADA35924568AE5005C4F25 /* NewsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsRequest.swift; sourceTree = "<group>"; };
 		9CE96D462441BD0500417A7C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
 		ADFFE5F533C1DCD2E302E418 /* Pods-loginForm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-loginForm.release.xcconfig"; path = "Target Support Files/Pods-loginForm/Pods-loginForm.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -197,6 +199,7 @@
 			isa = PBXGroup;
 			children = (
 				9C56170A2420B5E500B791A2 /* VKAthorizationViewController.swift */,
+				9CADA35924568AE5005C4F25 /* NewsRequest.swift */,
 				9C56170C2420CA7800B791A2 /* FriendsRequest.swift */,
 				9C5617102420DB2000B791A2 /* GroupsRequest.swift */,
 				9C5617122420DC8300B791A2 /* SearchGroupsRequest.swift */,
@@ -326,6 +329,7 @@
 				9C2E833923FFCCB000BD244F /* testTableViewHeader.swift in Sources */,
 				9C56170B2420B5E500B791A2 /* VKAthorizationViewController.swift in Sources */,
 				9C4AC87323F161CB00BFF5E7 /* LoginFormController.swift in Sources */,
+				9CADA35A24568AE5005C4F25 /* NewsRequest.swift in Sources */,
 				9C4AC88C23F1864B00BFF5E7 /* FriendsCollectionCell.swift in Sources */,
 				9C4AC89123F1B19B00BFF5E7 /* FriendCollectionController.swift in Sources */,
 				9C2E836224007E5900BD244F /* NewsCell.swift in Sources */,
@@ -496,7 +500,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = X2648CBJ7V;
 				INFOPLIST_FILE = loginForm/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
@@ -516,7 +520,7 @@
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = X2648CBJ7V;
 				INFOPLIST_FILE = loginForm/Info.plist;
-				IPHONEOS_DEPLOYMENT_TARGET = 13.1;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",

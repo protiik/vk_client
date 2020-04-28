@@ -40,17 +40,17 @@ class PictureViewController: UIViewController {
         let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(onTap2(_:)))
         imagesFriendTwo.addGestureRecognizer(tapGesture2)
         
+        photoService.loadData()
+        loadData()
         
-        photoService.loadData {
-            self.loadData()
-            for i in self.photosList {
-                let photo = Session.shared.getImage(url: i.photo)
-                self.photosCached.append(photo!)
-            }
-            let images = self.photosCached[self.count]
-            
-            self.imagesFriendOne.image = images
+        
+        for i in self.photosList {
+            let photo = Session.shared.getImage(url: i.photo)
+            self.photosCached.append(photo!)
         }
+        let images = self.photosCached[self.count]
+        
+        self.imagesFriendOne.image = images
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -61,7 +61,7 @@ class PictureViewController: UIViewController {
     func loadData () {
         do{
             let realm = try Realm()
-            print(realm.configuration.fileURL)
+            print(realm.configuration.fileURL ?? "Нет данных в БД")
             let photos = realm.objects(PhotosVK.self)
             photosList = Array( photos )
         }catch{

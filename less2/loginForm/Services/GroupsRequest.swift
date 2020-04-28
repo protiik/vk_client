@@ -17,28 +17,9 @@ class GroupsVK: Object {
     @objc dynamic var photo = String()
 }
 
-//class DataBaseGroups {
-//    func save( groups: [GroupsVK] ) throws {
-//        let realm = try Realm()
-//        realm.beginWrite()
-//        realm.add(groups)
-//        try realm.commitWrite()
-//    }
-//
-//    func groups() -> [GroupsVK] {
-//        do {
-//            let realm = try Realm()
-//            let objects = realm.objects(GroupsVK.self)
-//            return Array(objects)
-//        }
-//        catch {
-//            return []
-//        }
-//    }
-//}
 
 protocol GroupsServiceRequest {
-    func loadData ()
+    func loadData (handler: @escaping () -> Void)
 }
 
 protocol GroupsParser {
@@ -90,7 +71,7 @@ class GroupsRequest: GroupsServiceRequest {
         self.parser = parser
     }
     
-    func loadData() {
+    func loadData(handler: @escaping () -> Void) {
         let baseURL = "https://api.vk.com/method"
         let apiKey = Session.shared.token
         
@@ -103,12 +84,12 @@ class GroupsRequest: GroupsServiceRequest {
             "extended": 1
         ]
         
-        Alamofire.request(url, method: .get, parameters: parameters).responseJSON {  (response) in
+        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { [handler]  (response) in
             guard let data = response.data else { return }
             
             let groups: [GroupsVK] = self.parser.parse(data: data)
             self.save(groups: groups)
-            
+            handler()
             
         }
         
