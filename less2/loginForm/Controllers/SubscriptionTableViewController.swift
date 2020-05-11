@@ -38,10 +38,10 @@ class SubscriptionTableViewController: UITableViewController {
         super.viewDidLoad()
         
         let dataDownload = DispatchQueue(label: "download_data_friends")
-        dataDownload.async {
-            self.groupsService.loadData { }
-        }
-        groupsService.loadData { }
+//        dataDownload.async {
+//            self.groupsService.loadData { }
+//        }
+//        groupsService.loadData { }
         observeChangesGroups()
         
         refreshControl = UIRefreshControl()

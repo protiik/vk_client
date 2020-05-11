@@ -26,9 +26,9 @@ class NewsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         let dataDownload = DispatchQueue(label: "download_data_news")
-        dataDownload.async {
-            self.newsService.loadData { }
-        }
+//        dataDownload.async {
+//            self.newsService.loadData { }
+//        }
         loadData()
         
         tableView.refreshControl = refreshControl
@@ -58,7 +58,7 @@ class NewsViewController: UIViewController {
     }
     private let queueNews = DispatchQueue(label: "download_url")
     private func downloadImageNews (for url: String, indexPath: IndexPath) {
-        DispatchQueue.global().async {
+        queueNews.async {
             if let image = Session.shared.getImage(url: url){
                 self.cachedImagedNews[url] = image
                 DispatchQueue.main.async {
@@ -72,7 +72,7 @@ class NewsViewController: UIViewController {
         queueGroups.async {
             if let image = Session.shared.getImage(url: url){
                 self.cachedImagedNews[url] = image
-                //                    self.tableView.reloadRows(at: [indexPath], with: .none)
+//                        self.tableView.reloadRows(at: [indexPath], with: .none)
                 
             }
         }
@@ -99,18 +99,19 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.reposts.text = element.repost
         cell.views.text = element.views
         
-        groupsList.forEach { i in
-            if element.id == -(i.id){
-                cell.nameGroup.text = i.name
-                let image = i.photo
-                if let cached = cahedImageGroups[image] {
-                    cell.groupImage?.image = cached
-                }else {
-                    downloadImageGroups(for: image , indexPath: indexPath)
-                }
-
-            }
-        }
+//        groupsList.forEach { i in
+//            if element.id == -(i.id){
+//                cell.nameGroup.text = i.name
+//                let image = i.photo
+//                cell.groupImage.image = Session.shared.getImage(url: image)
+////                if let cached = cahedImageGroups[image] {
+////                    cell.groupImage?.image = cached
+////                }else {
+////                    downloadImageGroups(for: image , indexPath: indexPath)
+////                }
+//
+//            }
+//        }
         
         let image = element.newsPhoto
         

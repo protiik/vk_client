@@ -6,4 +6,21 @@
 //  Copyright © 2020 prot. All rights reserved.
 //
 
-import Foundation
+import UIKit
+
+class TabBarController: UITabBarController {
+    
+    let newsService: NewsServiceRequest = NewsRequest(parser: SwiftyJSONParserNews())
+    let friendService: FriendsServiceRequest = FriendRequest(parser: SwiftyJSONParserFriends())
+    let groupsService: GroupsServiceRequest = GroupsRequest(parser: SwiftyJSONParserGroups())
+    
+    override func viewDidLoad() {
+        super .viewDidLoad()
+        
+        
+        newsService.loadData { }
+        friendService.loadData { }
+        groupsService.loadData { }
+        
+    }
+}
