@@ -103,7 +103,7 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
             if element.id == -(i.id){
                 cell.nameGroup.text = i.name
                 let image = i.photo
-                if let cached = cachedImagedNews[image] {
+                if let cached = cahedImageGroups[image] {
                     cell.groupImage?.image = cached
                 }else {
                     downloadImageGroups(for: image , indexPath: indexPath)
