@@ -18,7 +18,11 @@ class NewsViewController: UIViewController {
         guard let news = newsList else { return [] }
         return Array(news)
     }
-    var groupsList: [GroupsVK] = []
+    var groupsList: Results<GroupsVK>?
+    var groupsMassive: [GroupsVK] {
+        guard let groups = groupsList else { return [] }
+        return Array(groups)
+    }
     var cachedImagedNews = [String: UIImage]()
     var cahedImageGroups = [String: UIImage]()
     let newsService: NewsServiceRequest = NewsRequest(parser: SwiftyJSONParserNews())
@@ -50,7 +54,7 @@ class NewsViewController: UIViewController {
             let news = realm.objects(NewsVK.self)
             let groups = realm.objects(GroupsVK.self)
             newsList = ( news )
-            groupsList = Array(groups)
+            groupsList = ( groups )
             tableView.reloadData()
         }catch{
             print(error.localizedDescription)
@@ -99,19 +103,19 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
         cell.reposts.text = element.repost
         cell.views.text = element.views
         
-//        groupsList.forEach { i in
-//            if element.id == -(i.id){
-//                cell.nameGroup.text = i.name
-//                let image = i.photo
-//                cell.groupImage.image = Session.shared.getImage(url: image)
-////                if let cached = cahedImageGroups[image] {
-////                    cell.groupImage?.image = cached
-////                }else {
-////                    downloadImageGroups(for: image , indexPath: indexPath)
-////                }
-//
-//            }
-//        }
+        groupsMassive.forEach { i in
+            if element.id == -(i.id){
+                cell.nameGroup.text = i.name
+                let image = i.photo
+                cell.groupImage.image = Session.shared.getImage(url: image)
+                if let cached = cahedImageGroups[image] {
+                    cell.groupImage?.image = cached
+                }else {
+                    downloadImageGroups(for: image , indexPath: indexPath)
+                }
+
+            }
+        }
         
         let image = element.newsPhoto
         

@@ -40,8 +40,8 @@ class PictureViewController: UIViewController {
         let tapGesture2 = UITapGestureRecognizer(target: self, action: #selector(onTap2(_:)))
         imagesFriendTwo.addGestureRecognizer(tapGesture2)
         
-        photoService.loadData()
-        loadData()
+//        photoService.loadData()
+//        loadData()
         
         
         for i in self.photosList {

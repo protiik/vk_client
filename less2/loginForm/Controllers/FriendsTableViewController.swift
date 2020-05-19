@@ -238,6 +238,7 @@ class FriendsTableViewController: UITableViewController{
             destinationViewController?.collectionFriendName = element.name
             //картинка
             Session.shared.userId = element.id
+            
         }
     }
 }

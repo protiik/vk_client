@@ -17,7 +17,7 @@ class PhotosVK: Object {
 
 
 protocol PhotosServiceRequest {
-    func loadData ()
+    func loadData (handler: @escaping () -> Void)
 }
 
 protocol PhotosParser {
@@ -49,7 +49,11 @@ class SwiftyJSONParserPhotos: PhotosParser {
 }
 
 class PhotosRequest: PhotosServiceRequest {
-
+    
+    let dataDownload = DispatchQueue(label: "data_download_AF")
+    
+    let userId = Session.shared.userId
+    
     let parser: PhotosParser
     
     func save( photos: [PhotosVK] )  {
@@ -70,11 +74,10 @@ class PhotosRequest: PhotosServiceRequest {
         self.parser = parser
     }
     
-    let userId = Session.shared.userId
     let baseURL = "https://api.vk.com/method"
     let apiKey = Session.shared.token
     
-    func loadData () {
+    func loadData (handler: @escaping () -> Void) {
         let path = "/photos.getAll"
         let url = baseURL + path
         
@@ -84,11 +87,12 @@ class PhotosRequest: PhotosServiceRequest {
             "access_token": apiKey
         ]
         print("\(userId)")
-        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { (response) in
+        Alamofire.request(url, method: .get, parameters: parameters).responseJSON(queue:dataDownload) { [handler] (response) in
             guard let data = response.data else { return }
             
             let photos: [PhotosVK] = self.parser.parse(data: data)
             self.save(photos: photos)
+            handler()
         }
         
     }
