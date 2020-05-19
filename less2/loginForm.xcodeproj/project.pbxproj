@@ -41,6 +41,7 @@
 		9C761E8023E1EBE10090FB56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C761E7E23E1EBE10090FB56 /* LaunchScreen.storyboard */; };
 		9CADA35A24568AE5005C4F25 /* NewsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CADA35924568AE5005C4F25 /* NewsRequest.swift */; };
 		9CE96D472441BD0500417A7C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CE96D462441BD0500417A7C /* GoogleService-Info.plist */; };
+		9CFEAF512473D6AD00CEB84A /* PhotosCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CFEAF502473D6AD00CEB84A /* PhotosCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,7 @@
 		9C761E8123E1EBE10090FB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9CADA35924568AE5005C4F25 /* NewsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsRequest.swift; sourceTree = "<group>"; };
 		9CE96D462441BD0500417A7C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9CFEAF502473D6AD00CEB84A /* PhotosCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = PhotosCache.swift; sourceTree = "<group>"; };
 		ADFFE5F533C1DCD2E302E418 /* Pods-loginForm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-loginForm.release.xcconfig"; path = "Target Support Files/Pods-loginForm/Pods-loginForm.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -208,6 +210,7 @@
 				9C5617122420DC8300B791A2 /* SearchGroupsRequest.swift */,
 				9C56170E2420D8C700B791A2 /* PhotoRequest.swift */,
 				9C5617082420B46800B791A2 /* Session.swift */,
+				9CFEAF502473D6AD00CEB84A /* PhotosCache.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -349,6 +352,7 @@
 				9C56170F2420D8C700B791A2 /* PhotoRequest.swift in Sources */,
 				9C5617132420DC8300B791A2 /* SearchGroupsRequest.swift in Sources */,
 				9C4AC88F23F1A0ED00BFF5E7 /* friendsStruct.swift in Sources */,
+				9CFEAF512473D6AD00CEB84A /* PhotosCache.swift in Sources */,
 				9C4AC87923F167FF00BFF5E7 /* SubscriptionTableViewController.swift in Sources */,
 				9C5617092420B46800B791A2 /* Session.swift in Sources */,
 				9C56170D2420CA7800B791A2 /* FriendsRequest.swift in Sources */,

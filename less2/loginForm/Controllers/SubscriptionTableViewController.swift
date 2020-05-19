@@ -17,7 +17,8 @@ class SubscriptionTableViewController: UITableViewController {
     var groupsList: Results<GroupsVK>?
     var token: NotificationToken?
     var searchAns: [GroupsVK] = []
-    var cachedImaged = [String: UIImage]()
+//    var cachedImaged = [String: UIImage]()
+    lazy var photoscached = PhotoCache(table: self.tableView)
     var myGroups: [GroupsVK] {
         guard let groups = groupsList else {return []}
         return Array(groups)
@@ -37,11 +38,6 @@ class SubscriptionTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let dataDownload = DispatchQueue(label: "download_data_friends")
-//        dataDownload.async {
-//            self.groupsService.loadData { }
-//        }
-//        groupsService.loadData { }
         observeChangesGroups()
         
         refreshControl = UIRefreshControl()
@@ -146,7 +142,7 @@ class SubscriptionTableViewController: UITableViewController {
     private func downloadImage (for url: String, indexPath: IndexPath) {
         queue.sync {
             if let image = Session.shared.getImage(url: url){
-                self.cachedImaged[url] = image
+//                self.cachedImaged[url] = image
                 
                 DispatchQueue.main.async {
                     self.tableView.reloadRows(at: [indexPath], with: .automatic)
@@ -181,9 +177,6 @@ class SubscriptionTableViewController: UITableViewController {
         // #warning Incomplete implementation, return the number of rows
         return myGroupsCell.count
         
-        //        groupsList?.count ?? 0
-        
-        
     }
     
     override func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -193,12 +186,7 @@ class SubscriptionTableViewController: UITableViewController {
         let element = myGroupsCell[indexPath.row]
         cell.groupNameLabel.text = element.name
         let image = element.photo
-        if let cached = cachedImaged[image] {
-            cell.groupImageView.image = cached
-        }else {
-            downloadImage(for: image , indexPath: indexPath)
-        }
-        
+        cell.groupImageView.image = photoscached.image(indexPath: indexPath, at: image)
         
         return cell
     }
