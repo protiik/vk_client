@@ -17,7 +17,8 @@ class SubscriptionTableViewController: UITableViewController {
     var groupsList: Results<GroupsVK>?
     var token: NotificationToken?
     var searchAns: [GroupsVK] = []
-    var cachedImaged = [String: UIImage]()
+//    var cachedImaged = [String: UIImage]()
+    lazy var photosCached = PhotoCache(table: self.tableView)
     var myGroups: [GroupsVK] {
         guard let groups = groupsList else {return []}
         return Array(groups)
@@ -37,11 +38,6 @@ class SubscriptionTableViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let dataDownload = DispatchQueue(label: "download_data_friends")
-//        dataDownload.async {
-//            self.groupsService.loadData { }
-//        }
-//        groupsService.loadData { }
         observeChangesGroups()
         
         refreshControl = UIRefreshControl()
@@ -142,18 +138,18 @@ class SubscriptionTableViewController: UITableViewController {
     //        }
     //    }
     
-    let queue = DispatchQueue(label: "my_groups_download_image_url")
-    private func downloadImage (for url: String, indexPath: IndexPath) {
-        queue.sync {
-            if let image = Session.shared.getImage(url: url){
-                self.cachedImaged[url] = image
-                
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
-            }
-        }
-    }
+//    let queue = DispatchQueue(label: "my_groups_download_image_url")
+//    private func downloadImage (for url: String, indexPath: IndexPath) {
+//        queue.sync {
+//            if let image = Session.shared.getImage(url: url){
+//                self.cachedImaged[url] = image
+//
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+//                }
+//            }
+//        }
+//    }
     
     
     //функция удаления элементов
@@ -193,11 +189,7 @@ class SubscriptionTableViewController: UITableViewController {
         let element = myGroupsCell[indexPath.row]
         cell.groupNameLabel.text = element.name
         let image = element.photo
-        if let cached = cachedImaged[image] {
-            cell.groupImageView.image = cached
-        }else {
-            downloadImage(for: image , indexPath: indexPath)
-        }
+        cell.groupImageView.image = photosCached.image(indexPath: indexPath, at: image)
         
         
         return cell

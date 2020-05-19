@@ -22,7 +22,7 @@ class FriendsTableViewController: UITableViewController{
             return Array(searchbar.isActive ? searchMassive : friendsList)
     }
     var token: [NotificationToken] = []
-    var cachedImaged = [String: UIImage]()
+    lazy var photosCached = PhotoCache(table: self.tableView)
    
     
     
@@ -36,13 +36,6 @@ class FriendsTableViewController: UITableViewController{
         
         tableView.register(UINib(nibName: "TestTableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "HeaderView")
         
-        
-        let dataDownload = DispatchQueue(label: "download_data_friends")
-//        dataDownload.async {
-//            self.friendService.loadData{
-//                self.prepareSections()
-//            }
-//        }
         prepareSections()
         
         let db = Database.database().reference()
@@ -113,18 +106,18 @@ class FriendsTableViewController: UITableViewController{
     //        }
     //    }
     
-    let queue = DispatchQueue(label: "download_url")
-    private func downloadImage (for url: String, indexPath: IndexPath) {
-        queue.async {
-               if let image = Session.shared.getImage(url: url){
-                   self.cachedImaged[url] = image
-
-                   DispatchQueue.main.async {
-                       self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                   }
-               }
-           }
-    }
+//    let queue = DispatchQueue(label: "download_url")
+//    private func downloadImage (for url: String, indexPath: IndexPath) {
+//        queue.async {
+//               if let image = Session.shared.getImage(url: url){
+//                   self.cachedImaged[url] = image
+//
+//                   DispatchQueue.main.async {
+//                       self.tableView.reloadRows(at: [indexPath], with: .automatic)
+//                   }
+//               }
+//           }
+//    }
     // MARK: - Table view data source
     
     override func numberOfSections(in tableView: UITableView) -> Int {
@@ -155,11 +148,7 @@ class FriendsTableViewController: UITableViewController{
         let element = myFriendsCell[indexPath.section][indexPath.row]
         cell.nameLabel.text = element.name
         let image = element.photo
-        if let cached = cachedImaged[image] {
-            cell.imageFriendView.image = cached
-        }else {
-            downloadImage(for: image , indexPath: indexPath)
-        }
+        cell.imageFriendView.image = photosCached.image(indexPath: indexPath, at: image)
         
         return cell
     }

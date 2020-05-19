@@ -19,7 +19,9 @@ class FriendCollectionController: UICollectionViewController {
         guard let photos = photosList else {return []}
         return Array(photos)
     }
-    var cachedImaged = [String: UIImage]()
+    
+    lazy var photosCached = PhotoCache(collection: self.collectionView)
+//    var cachedImaged = [String: UIImage]()
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -45,17 +47,17 @@ class FriendCollectionController: UICollectionViewController {
         }
             print(photosMassive)
     }
-    let queue = DispatchQueue(label: "download_url")
-    private func downloadImage (for url: String, indexPath: IndexPath) {
-        queue.async {
-            if let image = Session.shared.getImage(url: url){
-                self.cachedImaged[url] = image
-                DispatchQueue.main.async {
-                    self.collectionView.reloadItems(at: [indexPath])
-                }
-            }
-        }
-    }
+//    let queue = DispatchQueue(label: "download_url")
+//    private func downloadImage (for url: String, indexPath: IndexPath) {
+//        queue.async {
+//            if let image = Session.shared.getImage(url: url){
+//                self.cachedImaged[url] = image
+//                DispatchQueue.main.async {
+//                    self.collectionView.reloadItems(at: [indexPath])
+//                }
+//            }
+//        }
+//    }
     /*
      // MARK: - Navigation
      
@@ -85,11 +87,7 @@ class FriendCollectionController: UICollectionViewController {
         
         let element = photosMassive[indexPath.row]
         let image = element.photo
-        if let cahed = cachedImaged[image]{
-            cell.friendImageView.image = cahed
-        }else {
-            downloadImage(for: image, indexPath: indexPath)
-        }
+        cell.friendImageView.image = photosCached.image(indexPath: indexPath, at: image)
         
         return cell
     }
