@@ -51,6 +51,8 @@ class SwiftyJSONParserGroups: GroupsParser {
 
 class GroupsRequest: GroupsServiceRequest {
 
+    let dataDownload = DispatchQueue(label: "data_download_AF")
+    
     let parser: GroupsParser
     
     func save( groups: [GroupsVK] )  {
@@ -84,7 +86,7 @@ class GroupsRequest: GroupsServiceRequest {
             "extended": 1
         ]
         
-        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { [handler]  (response) in
+        Alamofire.request(url, method: .get, parameters: parameters).responseJSON(queue: dataDownload) { [handler]  (response) in
             guard let data = response.data else { return }
             
             let groups: [GroupsVK] = self.parser.parse(data: data)

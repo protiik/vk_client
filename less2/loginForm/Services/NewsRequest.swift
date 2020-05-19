@@ -75,7 +75,11 @@ class SwiftyJSONParserNews: NewsParser {
 }
 
 class NewsRequest: NewsServiceRequest {
+    
+    let dataDownload = DispatchQueue(label: "data_download_AF")
+    
     let parser: NewsParser
+    
     func save( news: [NewsVK] )  {
         do {
             let realm = try Realm()
@@ -111,7 +115,7 @@ class NewsRequest: NewsServiceRequest {
             "access_token": apiKey
         ]
         
-        Alamofire.request(url, method: .post, parameters: parameters).responseJSON { [handler] (response) in
+        Alamofire.request(url, method: .post, parameters: parameters).responseJSON(queue:dataDownload) { [handler] (response) in
             guard let data = response.data else { return }
             
             let news: [NewsVK] = self.parser.parse(data: data)

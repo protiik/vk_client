@@ -55,6 +55,7 @@ class SwiftyJSONParserFriends: FriendsParser {
 }
 
 class FriendRequest: FriendsServiceRequest {
+    let dataDownload = DispatchQueue(label: "data_download_AF")
     let parser: FriendsParser
     func save( friends: [FriendsVK] )  {
         do {
@@ -88,7 +89,7 @@ class FriendRequest: FriendsServiceRequest {
             "access_token": apiKey
         ]
         
-        Alamofire.request(url, method: .get, parameters: parameters).responseJSON { [handler] (response) in
+        Alamofire.request(url, method: .get, parameters: parameters).responseJSON(queue: dataDownload) { [handler] (response) in
             guard let data = response.data else { return }
             
             let friends: [FriendsVK] = self.parser.parse(data: data)

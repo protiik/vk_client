@@ -38,11 +38,12 @@ class FriendsTableViewController: UITableViewController{
         
         
         let dataDownload = DispatchQueue(label: "download_data_friends")
-        dataDownload.async {
-            self.friendService.loadData{
-                self.prepareSections()
-            }
-        }
+//        dataDownload.async {
+//            self.friendService.loadData{
+//                self.prepareSections()
+//            }
+//        }
+        prepareSections()
         
         let db = Database.database().reference()
         requestHandler = db.child("id").observe(.value, with: { snapshot in
@@ -114,7 +115,7 @@ class FriendsTableViewController: UITableViewController{
     
     let queue = DispatchQueue(label: "download_url")
     private func downloadImage (for url: String, indexPath: IndexPath) {
-        queue.sync {
+        queue.async {
                if let image = Session.shared.getImage(url: url){
                    self.cachedImaged[url] = image
 
