@@ -35,7 +35,7 @@ class FriendsTableViewController: UITableViewController{
         tableView.tableHeaderView = searchbar.searchBar
         
         tableView.register(UINib(nibName: "TestTableViewHeader", bundle: nil), forHeaderFooterViewReuseIdentifier: "HeaderView")
-        
+        //еу
         prepareSections()
         
         let db = Database.database().reference()
