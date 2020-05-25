@@ -41,6 +41,7 @@
 		9C761E8023E1EBE10090FB56 /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 9C761E7E23E1EBE10090FB56 /* LaunchScreen.storyboard */; };
 		9CADA35A24568AE5005C4F25 /* NewsRequest.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CADA35924568AE5005C4F25 /* NewsRequest.swift */; };
 		9CE96D472441BD0500417A7C /* GoogleService-Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 9CE96D462441BD0500417A7C /* GoogleService-Info.plist */; };
+		9CF2D821247BC5290067A8A6 /* PhotoCache.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9CF2D820247BC5290067A8A6 /* PhotoCache.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -81,6 +82,7 @@
 		9C761E8123E1EBE10090FB56 /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		9CADA35924568AE5005C4F25 /* NewsRequest.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = NewsRequest.swift; sourceTree = "<group>"; };
 		9CE96D462441BD0500417A7C /* GoogleService-Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist.xml; path = "GoogleService-Info.plist"; sourceTree = "<group>"; };
+		9CF2D820247BC5290067A8A6 /* PhotoCache.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = PhotoCache.swift; path = loginForm/PhotoCache.swift; sourceTree = SOURCE_ROOT; };
 		ADFFE5F533C1DCD2E302E418 /* Pods-loginForm.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-loginForm.release.xcconfig"; path = "Target Support Files/Pods-loginForm/Pods-loginForm.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -208,6 +210,7 @@
 				9C5617122420DC8300B791A2 /* SearchGroupsRequest.swift */,
 				9C56170E2420D8C700B791A2 /* PhotoRequest.swift */,
 				9C5617082420B46800B791A2 /* Session.swift */,
+				9CF2D820247BC5290067A8A6 /* PhotoCache.swift */,
 			);
 			path = Services;
 			sourceTree = "<group>";
@@ -342,6 +345,7 @@
 				076A9C512410EC6200B3CC72 /* CustomInteractiveTransition.swift in Sources */,
 				0740F91A240F96DA00444C42 /* CustomPushAnimator.swift in Sources */,
 				9C6C403D24052C7600460F66 /* SettingsViewController.swift in Sources */,
+				9CF2D821247BC5290067A8A6 /* PhotoCache.swift in Sources */,
 				9C4AC87723F165E300BFF5E7 /* FriendsTableViewController.swift in Sources */,
 				9C761E7623E1EBE00090FB56 /* SceneDelegate.swift in Sources */,
 				9C4AC87D23F168BC00BFF5E7 /* AllGroupsTableController.swift in Sources */,

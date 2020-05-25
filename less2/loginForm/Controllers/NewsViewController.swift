@@ -12,6 +12,8 @@ class NewsViewController: UIViewController {
     
     @IBOutlet weak var tableView: UITableView!
     
+    lazy var photosCached = PhotoCache(table: self.tableView)
+    
     var refreshControl = UIRefreshControl()
     var newsList: Results<NewsVK>?
     var newsMassiveCell: [NewsVK]{
@@ -29,10 +31,7 @@ class NewsViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        let dataDownload = DispatchQueue(label: "download_data_news")
-//        dataDownload.async {
-//            self.newsService.loadData { }
-//        }
+ 
         loadData()
         
         tableView.refreshControl = refreshControl
@@ -60,27 +59,27 @@ class NewsViewController: UIViewController {
             print(error.localizedDescription)
         }
     }
-    private let queueNews = DispatchQueue(label: "download_url")
-    private func downloadImageNews (for url: String, indexPath: IndexPath) {
-        queueNews.async {
-            if let image = Session.shared.getImage(url: url){
-                self.cachedImagedNews[url] = image
-                DispatchQueue.main.async {
-                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
-                }
-            }
-        }
-    }
-    private let queueGroups = DispatchQueue(label: "download_url_groups")
-    private func downloadImageGroups (for url: String, indexPath: IndexPath) {
-        queueGroups.async {
-            if let image = Session.shared.getImage(url: url){
-                self.cachedImagedNews[url] = image
-//                        self.tableView.reloadRows(at: [indexPath], with: .none)
-                
-            }
-        }
-    }
+//    private let queueNews = DispatchQueue(label: "download_url")
+//    private func downloadImageNews (for url: String, indexPath: IndexPath) {
+//        queueNews.async {
+//            if let image = Session.shared.getImage(url: url){
+//                self.cachedImagedNews[url] = image
+//                DispatchQueue.main.async {
+//                    self.tableView.reloadRows(at: [indexPath], with: .automatic)
+//                }
+//            }
+//        }
+//    }
+//    private let queueGroups = DispatchQueue(label: "download_url_groups")
+//    private func downloadImageGroups (for url: String, indexPath: IndexPath) {
+//        queueGroups.async {
+//            if let image = Session.shared.getImage(url: url){
+//                self.cachedImagedNews[url] = image
+////                        self.tableView.reloadRows(at: [indexPath], with: .none)
+//
+//            }
+//        }
+//    }
     
 }
 
@@ -107,23 +106,13 @@ extension NewsViewController: UITableViewDelegate, UITableViewDataSource {
             if element.id == -(i.id){
                 cell.nameGroup.text = i.name
                 let image = i.photo
-                cell.groupImage.image = Session.shared.getImage(url: image)
-                if let cached = cahedImageGroups[image] {
-                    cell.groupImage?.image = cached
-                }else {
-                    downloadImageGroups(for: image , indexPath: indexPath)
-                }
-
+                cell.groupImage.image = photosCached.image(indexPath: indexPath, at: image)
             }
         }
         
         let image = element.newsPhoto
+        cell.postImage.image = photosCached.image(indexPath: indexPath, at: image)
         
-        if let cached = cachedImagedNews[image ] {
-            cell.postImage?.image = cached
-        }else {
-            downloadImageNews(for: image , indexPath: indexPath)
-        }
         return cell
     }
     
